@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title type="text">EventDay Extension Gallery</title>
+  <id>uuid:6df6542f-d22f-4138-90dd-a386fa370e64;id=1</id>
+  <updated>2015-11-12T23:36:04Z</updated>
+  <entry>
+    <id>uuid:6df6542f-d22f-4138-90dd-a386fa370e64;id=2</id>
+    <title type="text">DSL</title>
+    <summary type="text">Provides something useful.</summary>
+    <published>2015-11-12T23:36:04Z</published>
+    <updated>2015-11-12T23:36:04Z</updated>
+    <author>
+      <name>CM</name>
+    </author>
+    <category term="Templates" />
+    <content type="octet/stream" src="EventDayDsl.vsix" />
+    <Vsix xmlns="http://schemas.microsoft.com/developer/vsx-syndication-schema/2010">
+      <Id>EventDayDsl.Chris Martin.29665228-ba2b-4dcc-b6df-2c57b8899a12</Id>
+      <Version>1.1.1</Version>
+    </Vsix>
+  </entry>
+</feed>
