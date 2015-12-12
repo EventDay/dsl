@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (C) 2015 EventDay, Inc
+
+using System.Collections.Generic;
 
 namespace EventDayDsl.EventDay.Entities
 {
@@ -12,6 +14,8 @@ namespace EventDayDsl.EventDay.Entities
 
         public string Name { get; set; }
         public ISet<EnumerationValue> Values { get; set; }
+
+        public static IEqualityComparer<Enumeration> NameComparer { get; } = new NameEqualityComparer();
 
         private sealed class NameEqualityComparer : IEqualityComparer<Enumeration>
         {
@@ -29,8 +33,6 @@ namespace EventDayDsl.EventDay.Entities
                 return obj.Name?.GetHashCode() ?? 0;
             }
         }
-
-        public static IEqualityComparer<Enumeration> NameComparer { get; } = new NameEqualityComparer();
     }
 
     public class EnumerationValue
@@ -43,6 +45,8 @@ namespace EventDayDsl.EventDay.Entities
 
         public int Value { get; set; }
         public string Name { get; set; }
+
+        public static IEqualityComparer<EnumerationValue> ValueComparer { get; } = new ValueEqualityComparer();
 
         private sealed class ValueEqualityComparer : IEqualityComparer<EnumerationValue>
         {
@@ -60,7 +64,5 @@ namespace EventDayDsl.EventDay.Entities
                 return obj.Value.GetHashCode();
             }
         }
-
-        public static IEqualityComparer<EnumerationValue> ValueComparer { get; } = new ValueEqualityComparer();
     }
 }

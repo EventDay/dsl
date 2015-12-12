@@ -1,3 +1,5 @@
+// Copyright (C) 2015 EventDay, Inc
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,8 +12,8 @@ namespace EventDayDsl.EventDay
     internal class Dsl : GrammarBaseVisitor<string>
     {
         private string _commandType;
-        private string _eventType;
         private string _currentMessageName;
+        private string _eventType;
 
         public Dsl(string name)
         {
@@ -48,8 +50,8 @@ namespace EventDayDsl.EventDay
             foreach (var member in context.enumMemberList().enumMember())
             {
                 var valueContext = member.enumMemberValue();
-                int memberValue = int.Parse(VisitTerminal(valueContext.INTEGER()));
-                string memberName = VisitTerminal(member.name().ID());
+                var memberValue = int.Parse(VisitTerminal(valueContext.INTEGER()));
+                var memberName = VisitTerminal(member.name().ID());
                 @enum.Values.Add(new EnumerationValue(memberName, memberValue));
             }
             File.Enums.Add(@enum);
@@ -98,7 +100,7 @@ namespace EventDayDsl.EventDay
                 type += typeArguments.GetText();
             }
             var modifier = context.type().typeModifier();
-            bool isOptional = modifier?.OPTIONAL() != null;
+            var isOptional = modifier?.OPTIONAL() != null;
 
             var optionalName = context.optionalName();
             if (optionalName == null)
@@ -110,7 +112,7 @@ namespace EventDayDsl.EventDay
 
         public override string VisitCommandAssignment(GrammarParser.CommandAssignmentContext context)
         {
-            _commandType = string.Join(", ", context.type().Select(t=>VisitTerminal(t.ID())));
+            _commandType = string.Join(", ", context.type().Select(t => VisitTerminal(t.ID())));
             return context.GetText();
         }
 
@@ -141,7 +143,7 @@ namespace EventDayDsl.EventDay
         public override string VisitEntityDefinition(GrammarParser.EntityDefinitionContext context)
         {
             var name = VisitTerminal(context.type().ID());
-            
+
             var entity = new Entity(name);
             foreach (var argument in context.argumentList().argument())
             {
@@ -159,7 +161,7 @@ namespace EventDayDsl.EventDay
 
         public override string VisitMessageDefinition(GrammarParser.MessageDefinitionContext context)
         {
-            string type = "";
+            var type = "";
             var isEvent = context.EVENT() != null;
 
             if (isEvent)
@@ -171,7 +173,7 @@ namespace EventDayDsl.EventDay
                 type = _commandType;
             }
 
-            var interfaces = new HashSet<MarkerInterface>(MarkerInterface.NameComparer) {new MarkerInterface(type) };
+            var interfaces = new HashSet<MarkerInterface>(MarkerInterface.NameComparer) {new MarkerInterface(type)};
             var markerList = context.markerList();
             if (markerList != null)
             {
@@ -190,14 +192,14 @@ namespace EventDayDsl.EventDay
             File.Messages.Add(message);
             foreach (var argument in context.argumentList().argument())
             {
-                if (argument == null) 
+                if (argument == null)
                     continue;
 
                 var tuple = ReadProperty(argument);
                 message.AddProperty(tuple.Item1, tuple.Item2, tuple.Item3);
             }
 
-            if(isEvent)
+            if (isEvent)
                 message.AddProperty(Globals.EventGenerationDateProperty, "DateTime");
 
             var stringContext = context.toString();
@@ -216,7 +218,7 @@ namespace EventDayDsl.EventDay
 
         private Tuple<string, string, bool> ReadProperty(GrammarParser.ArgumentContext argument)
         {
-            string type = VisitTerminal(argument.type().ID());
+            var type = VisitTerminal(argument.type().ID());
             var typeArguments = argument.type().typeArguments();
             if (typeArguments != null)
             {
@@ -225,7 +227,7 @@ namespace EventDayDsl.EventDay
             string name;
 
             var modifier = argument.type().typeModifier();
-            bool isOptional = modifier?.OPTIONAL() != null;
+            var isOptional = modifier?.OPTIONAL() != null;
 
             if (argument.name() == null)
             {

@@ -1,3 +1,5 @@
+// Copyright (C) 2015 EventDay, Inc
+
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -42,7 +44,7 @@ namespace EventDayDsl.EventDay
             {"decimal", "Decimal"},
             {"decimal[]", "Decimal[]"},
             {"double", "Double"},
-            {"double[]", "Double[]"},
+            {"double[]", "Double[]"}
         };
 
         public static string CamelCased(this string text)
@@ -84,7 +86,10 @@ namespace EventDayDsl.EventDay
 
             var unit = new CodeCompileUnit();
             var ns = new CodeNamespace($"{file.Namespace}.Entities");
-            ns.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+
+            var globalNs = new CodeNamespace();
+            globalNs.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+            unit.Namespaces.Add(globalNs);
             unit.Namespaces.Add(ns);
 
             foreach (var entity in file.Entities)
@@ -93,7 +98,6 @@ namespace EventDayDsl.EventDay
             }
 
             return GenerateCode(unit);
-
         }
 
         private static string GenerateStateHandlers(File file)
@@ -103,7 +107,11 @@ namespace EventDayDsl.EventDay
 
             var unit = new CodeCompileUnit();
             var ns = new CodeNamespace($"{file.Namespace}.State");
-            ns.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+
+            var globalNs = new CodeNamespace();
+            globalNs.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+            unit.Namespaces.Add(globalNs);
+
             ns.Imports.Add(new CodeNamespaceImport($"{file.Namespace}.Messages"));
             unit.Namespaces.Add(ns);
 
@@ -113,7 +121,7 @@ namespace EventDayDsl.EventDay
                 {
                     TypeAttributes = TypeAttributes.Abstract | TypeAttributes.Public,
                     IsClass = true,
-                    BaseTypes = { new CodeTypeReference("IStateHandler")}
+                    BaseTypes = {new CodeTypeReference("IStateHandler")}
                 };
 
                 CodeTypeDeclaration iface = null;
@@ -121,7 +129,7 @@ namespace EventDayDsl.EventDay
                 {
                     iface = new CodeTypeDeclaration(definition.Interface)
                     {
-                        TypeAttributes = TypeAttributes.Sealed | TypeAttributes.Public | TypeAttributes.Interface,
+                        TypeAttributes = TypeAttributes.Sealed | TypeAttributes.Public | TypeAttributes.Interface
                     };
 
                     type.BaseTypes.Add(iface.Name);
@@ -134,27 +142,34 @@ namespace EventDayDsl.EventDay
                     Name = "Receive",
                     Attributes = MemberAttributes.Public,
                     Parameters =
-                {
-                    new CodeParameterDeclarationExpression(typeof(object), "message")
-                },
-                    ReturnType = new CodeTypeReference(typeof(bool))
+                    {
+                        new CodeParameterDeclarationExpression(typeof (object), "message")
+                    },
+                    ReturnType = new CodeTypeReference(typeof (bool))
                 };
 
                 var matcher = new CodeMethodInvokeExpression(new CodeVariableReferenceExpression("message"), "Match");
-                var invoker = definition.Receives.Aggregate(matcher, (current, messageType) => new CodeMethodInvokeExpression(new CodeMethodReferenceExpression(current, "With", new CodeTypeReference(messageType)), new CodeMethodReferenceExpression()
-                {
-                    MethodName = "When"
-                }));
+                var invoker = definition.Receives.Aggregate(matcher,
+                    (current, messageType) =>
+                        new CodeMethodInvokeExpression(
+                            new CodeMethodReferenceExpression(current, "With", new CodeTypeReference(messageType)),
+                            new CodeMethodReferenceExpression
+                            {
+                                MethodName = "When"
+                            }));
 
-                receive.Statements.Add(new CodeMethodReturnStatement(new CodePropertyReferenceExpression(invoker, "WasHandled")));
+                receive.Statements.Add(
+                    new CodeMethodReturnStatement(new CodePropertyReferenceExpression(invoker, "WasHandled")));
 
                 type.Members.Add(receive);
 
                 var whens = definition.Receives.Select(messageType => new CodeMemberMethod
                 {
                     Name = "When",
-                    Attributes = iface != null ? MemberAttributes.Public | MemberAttributes.Abstract : MemberAttributes.Family | MemberAttributes.Abstract,
-                    
+                    Attributes =
+                        iface != null
+                            ? MemberAttributes.Public | MemberAttributes.Abstract
+                            : MemberAttributes.Family | MemberAttributes.Abstract,
                     Parameters =
                     {
                         new CodeParameterDeclarationExpression(messageType, "message")
@@ -174,9 +189,13 @@ namespace EventDayDsl.EventDay
             if (!file.Enums.Any())
                 return null;
 
+            var globalNs = new CodeNamespace();
+            globalNs.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+
             var unit = new CodeCompileUnit();
             var ns = new CodeNamespace($"{file.Namespace}.Messages");
-            ns.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+
+            unit.Namespaces.Add(globalNs);
             unit.Namespaces.Add(ns);
 
             foreach (var enumeration in file.Enums)
@@ -185,7 +204,7 @@ namespace EventDayDsl.EventDay
                 {
                     IsEnum = true
                 };
-                
+
                 var fields = enumeration.Values.Select(x => new CodeMemberField(enumeration.Name, x.Name)
                 {
                     InitExpression = new CodePrimitiveExpression(x.Value)
@@ -204,7 +223,11 @@ namespace EventDayDsl.EventDay
             if (!file.MarkerInterfaces.Any())
                 return null;
 
+            var globalNs = new CodeNamespace();
+            globalNs.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+
             var unit = new CodeCompileUnit();
+            unit.Namespaces.Add(globalNs);
             var ns = new CodeNamespace($"{file.Namespace}.Messages");
             ns.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
             unit.Namespaces.Add(ns);
@@ -214,7 +237,7 @@ namespace EventDayDsl.EventDay
                 var type = new CodeTypeDeclaration(marker.Name)
                 {
                     TypeAttributes = TypeAttributes.Sealed | TypeAttributes.Public | TypeAttributes.Interface,
-                    Attributes = MemberAttributes.Public,
+                    Attributes = MemberAttributes.Public
                 };
 
                 foreach (var property in marker.Properties)
@@ -239,9 +262,13 @@ namespace EventDayDsl.EventDay
             if (!file.Messages.Any())
                 return null;
 
+            var globalNs = new CodeNamespace();
+            globalNs.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+
             var unit = new CodeCompileUnit();
+            unit.Namespaces.Add(globalNs);
             var ns = new CodeNamespace($"{file.Namespace}.Messages");
-            ns.Imports.AddRange(file.Usings.OrderBy(x => x).Select(x => new CodeNamespaceImport(x)).ToArray());
+
             if (file.Entities.Any())
             {
                 ns.Imports.Add(new CodeNamespaceImport($"{file.Namespace}.Entities"));
@@ -309,7 +336,7 @@ namespace EventDayDsl.EventDay
                 Attributes = MemberAttributes.Public
             };
 
-            foreach (var i in message.Interfaces.Where(x=>!string.IsNullOrEmpty(x.Name)))
+            foreach (var i in message.Interfaces.Where(x => !string.IsNullOrEmpty(x.Name)))
             {
                 type.BaseTypes.Add(new CodeTypeReference(i.Name.Trim()));
             }
@@ -328,10 +355,10 @@ namespace EventDayDsl.EventDay
 //                }
 //            });
 
-            var properties = new List<MessageProperty>(message.Interfaces.SelectMany(i=>i.Properties))
+            var properties = new List<MessageProperty>(message.Interfaces.SelectMany(i => i.Properties))
                 .Union(message.Properties).Distinct(MessageProperty.NameComparer);
 
-            foreach (var prop in properties.OrderBy(x=>x.Optional))
+            foreach (var prop in properties.OrderBy(x => x.Optional))
             {
                 var camelCased = prop.Name.CamelCased();
                 var pascalCased = prop.Name.PascalCased();
@@ -353,11 +380,14 @@ namespace EventDayDsl.EventDay
                 }
                 else
                 {
-                    var constructorArgument = new CodeParameterDeclarationExpression(prop.Type, prop.Optional ? $"{camelCased} = default({prop.Type})" : camelCased);
+                    var constructorArgument = new CodeParameterDeclarationExpression(prop.Type,
+                        prop.Optional ? $"{camelCased} = default({prop.Type})" : camelCased);
                     publicCtor.Parameters.Add(constructorArgument);
 
-                    var propertyReference = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), pascalCased);
-                    publicCtor.Statements.Add(new CodeAssignStatement(propertyReference, new CodeArgumentReferenceExpression(camelCased)));
+                    var propertyReference = new CodeFieldReferenceExpression(new CodeThisReferenceExpression(),
+                        pascalCased);
+                    publicCtor.Statements.Add(new CodeAssignStatement(propertyReference,
+                        new CodeArgumentReferenceExpression(camelCased)));
                 }
             }
 
@@ -408,7 +438,7 @@ namespace EventDayDsl.EventDay
             {
                 Name = "SetProperties",
                 ReturnType = type,
-                Attributes = MemberAttributes.Public,
+                Attributes = MemberAttributes.Public
             };
 
             var parameters = new List<CodeExpression>();
@@ -421,7 +451,7 @@ namespace EventDayDsl.EventDay
                 var camelCased = property.Name.CamelCased();
                 var pascalCased = property.Name.PascalCased();
 
-                if(pascalCased == Globals.EventGenerationDateProperty)
+                if (pascalCased == Globals.EventGenerationDateProperty)
                     continue;
 
                 var typeName = property.Type.SafeTypeName();
@@ -432,16 +462,19 @@ namespace EventDayDsl.EventDay
                 var variableName = $"local{pascalCased}";
                 var argumentReference = new CodeArgumentReferenceExpression(camelCased);
                 var variable = new CodeVariableDeclarationStatement(typeName, variableName, argumentReference);
-                
+
                 method.Statements.Add(variable);
 
-                var ifDefaultValue = new CodeBinaryOperatorExpression(argumentReference, CodeBinaryOperatorType.ValueEquality, new CodeDefaultValueExpression(new CodeTypeReference(typeName)));
+                var ifDefaultValue = new CodeBinaryOperatorExpression(argumentReference,
+                    CodeBinaryOperatorType.ValueEquality,
+                    new CodeDefaultValueExpression(new CodeTypeReference(typeName)));
                 var variableReference = new CodeVariableReferenceExpression(variableName);
 
                 parameters.Add(variableReference);
 
                 var condition = new CodeConditionStatement(ifDefaultValue,
-                    new CodeAssignStatement(variableReference, new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), pascalCased)));
+                    new CodeAssignStatement(variableReference,
+                        new CodePropertyReferenceExpression(new CodeThisReferenceExpression(), pascalCased)));
 
                 method.Statements.Add(condition);
             }
@@ -451,6 +484,5 @@ namespace EventDayDsl.EventDay
             method.Statements.Add(new CodeMethodReturnStatement(create));
             return method;
         }
-
     }
 }

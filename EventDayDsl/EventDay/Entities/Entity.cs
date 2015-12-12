@@ -1,3 +1,5 @@
+// Copyright (C) 2015 EventDay, Inc
+
 using System;
 using System.Collections.Generic;
 
@@ -14,9 +16,11 @@ namespace EventDayDsl.EventDay.Entities
         public string Name { get; set; }
         public ISet<MessageProperty> Properties { get; }
 
+        public static IEqualityComparer<Entity> NameComparer { get; } = new NameEqualityComparer();
+
         public void AddProperty(string name, string type, bool optional = false)
         {
-            var property = new MessageProperty { Name = name, Type = type.SafeTypeName(), Optional = optional };
+            var property = new MessageProperty {Name = name, Type = type.SafeTypeName(), Optional = optional};
             if (Properties.Contains(property))
                 throw new Exception($"Can not overwrite property '{name}'");
 
@@ -36,15 +40,8 @@ namespace EventDayDsl.EventDay.Entities
 
             public int GetHashCode(Entity obj)
             {
-                return (obj.Name != null ? obj.Name.GetHashCode() : 0);
+                return obj.Name != null ? obj.Name.GetHashCode() : 0;
             }
-        }
-
-        private static readonly IEqualityComparer<Entity> NameComparerInstance = new NameEqualityComparer();
-
-        public static IEqualityComparer<Entity> NameComparer
-        {
-            get { return NameComparerInstance; }
         }
     }
 }

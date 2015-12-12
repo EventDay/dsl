@@ -1,13 +1,10 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="GenerateDslCodePackage.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
+﻿// Copyright (C) 2015 EventDay, Inc
 
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.InteropServices;
+using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -37,7 +34,8 @@ namespace EventDayDsl
     [InstalledProductRegistration("#110", "#112", "1.0", IconResourceID = 400)] // Info on this package for Help/About
     [ProvideMenuResource("Menus.ctmenu", 1)]
     [Guid(PackageGuidString)]
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
+        Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     public sealed class GenerateDslCodePackage : Package
     {
@@ -59,7 +57,7 @@ namespace EventDayDsl
 
             _outputWindow = new Lazy<IVsOutputWindowPane>(() =>
             {
-                var window = (IVsOutputWindow)GetGlobalService(typeof (SVsOutputWindow));
+                var window = (IVsOutputWindow) GetGlobalService(typeof (SVsOutputWindow));
                 var paneId = new Guid("f85a97a090524a6c8b42247a33276024");
                 window.CreatePane(ref paneId, "EventDay DSL", 1, 1);
 
@@ -67,9 +65,10 @@ namespace EventDayDsl
                 window.GetPane(ref paneId, out pane);
                 return pane;
             });
-            _dte = new Lazy<DTE2>(() => ServiceProvider.GlobalProvider.GetService(typeof(EnvDTE.DTE)) as DTE2);
-            var sp = new Lazy<IServiceProvider>(() => GetGlobalService(typeof (IServiceProvider)) as IServiceProvider); 
-            _documentTable = new Lazy<RunningDocumentTable>(() => new RunningDocumentTable(new ServiceProvider(sp.Value)));
+            _dte = new Lazy<DTE2>(() => ServiceProvider.GlobalProvider.GetService(typeof (DTE)) as DTE2);
+            var sp = new Lazy<IServiceProvider>(() => GetGlobalService(typeof (IServiceProvider)) as IServiceProvider);
+            _documentTable =
+                new Lazy<RunningDocumentTable>(() => new RunningDocumentTable(new ServiceProvider(sp.Value)));
         }
 
         public IVsOutputWindowPane OutputPane => _outputWindow.Value;
@@ -91,10 +90,10 @@ namespace EventDayDsl
 
         #endregion
 
-        public EnvDTE.Document GetDocument(uint docCookie)
+        public Document GetDocument(uint docCookie)
         {
             var info = _documentTable.Value.GetDocumentInfo(docCookie);
-            return _dte.Value.Documents.OfType<EnvDTE.Document>().SingleOrDefault(x=>x.FullName == info.Moniker);
+            return _dte.Value.Documents.OfType<Document>().SingleOrDefault(x => x.FullName == info.Moniker);
         }
     }
 }

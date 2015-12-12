@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (C) 2015 EventDay, Inc
+
+using System;
 
 namespace EventDayDsl
 {

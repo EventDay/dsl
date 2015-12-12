@@ -1,3 +1,5 @@
+// Copyright (C) 2015 EventDay, Inc
+
 using System;
 using System.Collections.Generic;
 

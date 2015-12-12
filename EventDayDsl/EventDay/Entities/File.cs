@@ -1,3 +1,5 @@
+// Copyright (C) 2015 EventDay, Inc
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +8,7 @@ namespace EventDayDsl.EventDay.Entities
 {
     public class File
     {
-        public string Name { get; set; }
+        private readonly Dictionary<string, Tuple<string, string, bool>> _propertyDefinitions;
 
         public File(string name)
         {
@@ -27,18 +29,22 @@ namespace EventDayDsl.EventDay.Entities
             Entities = new HashSet<Entity>(Entity.NameComparer);
         }
 
+        public string Name { get; set; }
+
         public string Namespace { get; set; }
         public ISet<string> Usings { get; set; }
-        private readonly Dictionary<string, Tuple<string,string, bool>> _propertyDefinitions;
         public ISet<Message> Messages { get; set; }
         public ISet<Entity> Entities { get; set; }
         public ISet<MarkerInterface> MarkerInterfaces { get; set; }
         public ISet<StateDefinition> StateDefinitions { get; set; }
         public ISet<Enumeration> Enums { get; set; }
 
+        public static IEqualityComparer<File> NameComparer { get; } = new NameEqualityComparer();
+
         public Tuple<string, string, bool> FindPropertyDefinition(string name)
         {
-            var definition = _propertyDefinitions.FirstOrDefault(p => p.Key.Equals(name, StringComparison.InvariantCultureIgnoreCase));
+            var definition =
+                _propertyDefinitions.FirstOrDefault(p => p.Key.Equals(name, StringComparison.InvariantCultureIgnoreCase));
             return definition.Key == null ? null : definition.Value;
         }
 
@@ -51,6 +57,7 @@ namespace EventDayDsl.EventDay.Entities
         {
             _propertyDefinitions.Add(identifier, Tuple.Create(name, type.SafeTypeName(), optional));
         }
+
         public bool ContainsStateDefintion(string name)
         {
             return StateDefinitions.Any(x => x.Name == name);
@@ -79,7 +86,5 @@ namespace EventDayDsl.EventDay.Entities
                 return obj.Name?.GetHashCode() ?? 0;
             }
         }
-
-        public static IEqualityComparer<File> NameComparer { get; } = new NameEqualityComparer();
     }
 }

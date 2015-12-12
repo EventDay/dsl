@@ -1,4 +1,6 @@
-﻿namespace EventDayDsl.EventDay
+﻿// Copyright (C) 2015 EventDay, Inc
+
+namespace EventDayDsl.EventDay
 {
     public static class Globals
     {

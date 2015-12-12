@@ -1,7 +1,11 @@
-﻿using System.Collections.Generic;
+﻿// Copyright (C) 2015 EventDay, Inc
+
+using System.Collections.Generic;
 using System.IO;
 using Antlr4.Runtime;
 using EventDayDsl.EventDay.Language;
+using File = EventDayDsl.EventDay.Entities.File;
+
 // ReSharper disable AssignNullToNotNullAttribute
 
 namespace EventDayDsl.EventDay
@@ -12,9 +16,9 @@ namespace EventDayDsl.EventDay
         {
             var name = Path.GetFileNameWithoutExtension(file);
             var directory = Path.GetDirectoryName(file);
-            Entities.File representation;
+            File representation;
 
-            using (var stream = File.OpenRead(file))
+            using (var stream = System.IO.File.OpenRead(file))
             {
                 var lexer = new GrammarLexer(new AntlrInputStream(stream));
                 var tokenStream = new CommonTokenStream(lexer);
@@ -32,21 +36,21 @@ namespace EventDayDsl.EventDay
                 if (outputs.HasMarkers)
                 {
                     var path = Path.Combine(directory, $"{representation.Name}MarkerInterfaces.cs");
-                    File.WriteAllText(path, outputs.Markers);
+                    System.IO.File.WriteAllText(path, outputs.Markers);
                     yield return path;
                 }
 
                 if (outputs.HasMessages)
                 {
                     var path = Path.Combine(directory, $"{representation.Name}Messages.cs");
-                    File.WriteAllText(path, outputs.Messages);
+                    System.IO.File.WriteAllText(path, outputs.Messages);
                     yield return path;
                 }
 
                 if (outputs.HasEnumerations)
                 {
                     var path = Path.Combine(directory, $"{representation.Name}Enums.cs");
-                    File.WriteAllText(path, outputs.Enumerations);
+                    System.IO.File.WriteAllText(path, outputs.Enumerations);
                     yield return path;
                 }
             }
@@ -54,14 +58,14 @@ namespace EventDayDsl.EventDay
             if (outputs.HasStateDefinitions)
             {
                 var path = Path.Combine(directory, $"{representation.Name}StateSubscriptions.cs");
-                File.WriteAllText(path, outputs.StateDefinitions);
+                System.IO.File.WriteAllText(path, outputs.StateDefinitions);
                 yield return path;
             }
 
             if (outputs.HasEntities)
             {
                 var path = Path.Combine(directory, $"{representation.Name}Entities.cs");
-                File.WriteAllText(path, outputs.Entities);
+                System.IO.File.WriteAllText(path, outputs.Entities);
                 yield return path;
             }
         }
