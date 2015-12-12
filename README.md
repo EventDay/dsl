@@ -1,6 +1,8 @@
 #EventDay DSL
 
 A handy DSL for creating Akka actor protocols.
+
+Heavily influenced by the Lokad DSL
 ##Features
 ###DDD/CQRS
 ```
