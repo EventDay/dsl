@@ -42,13 +42,13 @@ namespace Demo.Indexing.Account
         public void When(DeleteAccount message)
         {
             AccountIndexEntry entry;
-            if (_index.TryRemove(message.Entry.UserId, out entry))
+            if (_index.TryRemove(message.UserId, out entry))
             {
                 Sender.Tell(new AccountDeleted(entry));
             }
             else
             {
-                Sender.Tell(new AccountDeletionFailed(entry, new Exception("Couldn't bring myself to delete ya.")));
+                Sender.Tell(new AccountDeletionFailed(message.UserId, new Exception("Couldn't bring myself to delete ya.")));
             }
         }
     }
