@@ -26,7 +26,7 @@ will generate
 ###Optional parameters
 `Message(parameter1, parameter2, parameter3?)`
 
-###[DDD/CQRS](src/Demo/Account.dsl)
+###[DDD/CQRS helpers](src/Demo/Account.dsl)
 
 ##Example
 [Demo DSL File](src/Demo/Indexing/Account/Indexer.dsl)
