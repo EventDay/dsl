@@ -4,8 +4,8 @@ A handy DSL for creating Akka actor protocols and reducing boilerplate.
 
 Heavily influenced by the Lokad DSL
 ##Installation
-- Compile
-- Install `EventDayDsl.vsix` in `EventDayDsl\bin\Debug`
+- A) Compile
+- B) Install `EventDayDsl.vsix` from `EventDayDsl\bin\Debug` (Built in Step A)
 
 ## [Demo](src/Demo)
 
