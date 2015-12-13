@@ -2,6 +2,10 @@
 
 namespace Demo
 {
+    public interface IStateHandler
+    {
+        bool Receive(object message);
+    }
     public interface IMessage
     {
     }

@@ -71,11 +71,24 @@
     </Compile>
     <Compile Include="Domain\AccountAggregate.cs" />
     <Compile Include="Domain\AccountStateHandler.cs" />
+    <Compile Include="Indexing\Account\AccountIndexer.cs" />
+    <Compile Include="Indexing\Account\IndexerEntities.cs">
+      <DependentUpon>Indexer.dsl</DependentUpon>
+    </Compile>
+    <Compile Include="Indexing\Account\IndexerMessages.cs">
+      <DependentUpon>Indexer.dsl</DependentUpon>
+    </Compile>
+    <Compile Include="Indexing\Account\IndexerStateSubscriptions.cs">
+      <DependentUpon>Indexer.dsl</DependentUpon>
+    </Compile>
+    <Compile Include="Indexing\Account\MemoryStore.cs" />
+    <Compile Include="Indexing\Account\StoreReceiver.cs" />
     <Compile Include="Interfaces.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Account.dsl" />
+    <None Include="Indexing\Account\Indexer.dsl" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
