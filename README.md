@@ -1,6 +1,6 @@
 #EventDay DSL
 
-A handy DSL for creating Akka actor protocols and reducing boilerplate.
+A handy DSL for creating [Akka.net](http://getakka.net/) actor protocols and reducing boilerplate.
 
 Heavily influenced by the Lokad DSL
 ##Installation
