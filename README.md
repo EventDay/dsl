@@ -7,6 +7,8 @@ Heavily influenced by the Lokad DSL
 - Compile
 - Install `EventDayDsl.vsix` in `EventDayDsl\bin\Debug`
 
+## [Demo](src/Demo)
+
 ##Features
 ###DDD/CQRS
 ```
