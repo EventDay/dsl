@@ -22,7 +22,7 @@ namespace Demo.Indexing.Account
                 Email = x.Email
             })));
 
-            Receive<AccountCreated>(x => store.Tell(new DeleteAccount(x.UserId)));
+            Receive<DeleteAccount>(x => store.Tell(new DeleteAccount(x.UserId)));
 
             Receive<AccountStored>(x => log.Info($"account '{x.Entry.UserId}' stored in the index"));
             Receive<AccountStorageFailed>(x => log.Error(x.Reason, $"failed to store account '{x.Entry.UserId}' in the index"));
