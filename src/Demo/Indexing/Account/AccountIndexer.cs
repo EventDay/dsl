@@ -27,8 +27,8 @@ namespace Demo.Indexing.Account
             Receive<AccountStored>(x => log.Info($"account '{x.Entry.UserId}' stored in the index"));
             Receive<AccountStorageFailed>(x => log.Error(x.Reason, $"failed to store account '{x.Entry.UserId}' in the index"));
 
-            Receive<AccountDeleted>(x => log.Info($"account '{x.Entry.UserId}' deleted in the index"));
-            Receive<AccountDeletionFailed>(x => log.Error(x.Reason, $"failed to delete account '{x.UserId}' in the index"));
+            Receive<AccountDeleted>(x => log.Info($"account '{x.Entry.UserId}' deleted from the index"));
+            Receive<AccountDeletionFailed>(x => log.Error(x.Reason, $"failed to delete account '{x.UserId}' from the index"));
         }
 
         private IActorRef GetStore()
