@@ -3,3 +3,4 @@ obj/
 packages/
 .vs/
 .paket/paket.exe
+.idea/

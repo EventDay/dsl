@@ -17,7 +17,7 @@
     <content type="octet/stream" src="EventDayDsl.vsix" />
     <Vsix xmlns="http://schemas.microsoft.com/developer/vsx-syndication-schema/2010">
       <Id>EventDayDsl.Chris Martin.29665228-ba2b-4dcc-b6df-2c57b8899a12</Id>
-      <Version>1.1.2</Version>
+      <Version>1.1.4</Version>
     </Vsix>
   </entry>
 </feed>

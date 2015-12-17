@@ -112,13 +112,29 @@ namespace EventDayDsl.EventDay
 
         public override string VisitCommandAssignment(GrammarParser.CommandAssignmentContext context)
         {
-            _commandType = string.Join(", ", context.type().Select(t => VisitTerminal(t.ID())));
+            _commandType = string.Join(", ", context.type().Select(t =>
+            {
+                var type = VisitTerminal(t.ID());
+                if (t.typeArguments() != null)
+                {
+                    type += t.typeArguments().GetText();
+                }
+                return type;
+            }));
             return context.GetText();
         }
 
         public override string VisitEventAssignment(GrammarParser.EventAssignmentContext context)
         {
-            _eventType = string.Join(", ", context.type().Select(t => VisitTerminal(t.ID())));
+            _eventType = string.Join(", ", context.type().Select(t =>
+            {
+                var type = VisitTerminal(t.ID());
+                if (t.typeArguments() != null)
+                {
+                    type += t.typeArguments().GetText();
+                }
+                return type;
+            }));
             return context.GetText();
         }
 
