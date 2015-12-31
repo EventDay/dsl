@@ -1,5 +1,6 @@
 // Copyright (C) 2015 EventDay, Inc
 
+using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using EventDayDsl.EventDay.Entities;
 using Microsoft.CSharp;
+using stdole;
 using File = EventDayDsl.EventDay.Entities.File;
 
 namespace EventDayDsl.EventDay
@@ -309,6 +311,11 @@ namespace EventDayDsl.EventDay
                 Attributes = MemberAttributes.Public
             };
 
+            foreach (var i in entity.Interfaces.Where(x => !string.IsNullOrEmpty(x.Name)))
+            {
+                type.BaseTypes.Add(new CodeTypeReference(i.Name.Trim()));
+            }
+
             var properties = new List<MessageProperty>(entity.Properties);
 
             foreach (var prop in properties.OrderBy(x => x.Optional))
@@ -323,6 +330,38 @@ namespace EventDayDsl.EventDay
                 property.Text += "{ get; set; }\n";
                 type.Members.Add(property);
             }
+            var expression = new Regex(@"\{(.+?)\}", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+            if (!string.IsNullOrEmpty(entity.StringFormat))
+            {
+                var args = new List<CodeExpression>();
+                var index = 0;
+                foreach (Match match in expression.Matches(entity.StringFormat))
+                {
+                    entity.StringFormat = entity.StringFormat.Replace(match.ToString(), "{" + index++ + "}");
+                    var propertyName = match.Groups[1].Value.PascalCased();
+                    args.Add(new CodeFieldReferenceExpression(new CodeThisReferenceExpression(), propertyName));
+                }
+
+                args.Insert(0, new CodePrimitiveExpression(entity.StringFormat));
+
+                type.Members.Add(new CodeMemberMethod
+                {
+                    Name = "ToString",
+                    ReturnType = new CodeTypeReference(typeof(string)),
+                    Attributes = MemberAttributes.Override | MemberAttributes.Public,
+                    Statements =
+                    {
+                        new CodeMethodReturnStatement
+                        {
+                            Expression =
+                                new CodeMethodInvokeExpression(new CodeTypeReferenceExpression(typeof (string)),
+                                    "Format", args.ToArray())
+                        }
+                    }
+                });
+            }
+
+            type.Members.Add(entity.AddSetPropertiesMethod(SetPropertiesType.Properties));
 
             return type;
         }
@@ -430,7 +469,13 @@ namespace EventDayDsl.EventDay
             return type;
         }
 
-        private static CodeMemberMethod AddSetPropertiesMethod(this Message message)
+        private enum SetPropertiesType
+        {
+            Constructor,
+            Properties
+        }
+
+        private static CodeMemberMethod AddSetPropertiesMethod(this IMessage message, SetPropertiesType setType = SetPropertiesType.Constructor)
         {
             var type = new CodeTypeReference(message.Name.PascalCased());
 
@@ -446,7 +491,8 @@ namespace EventDayDsl.EventDay
             var properties = new List<MessageProperty>(message.Interfaces.SelectMany(i => i.Properties))
                 .Union(message.Properties).Distinct(MessageProperty.NameComparer);
 
-            foreach (var property in properties.OrderBy(x => x.Optional))
+            var messageProperties = properties as MessageProperty[] ?? properties.ToArray();
+            foreach (var property in messageProperties.OrderBy(x => x.Optional))
             {
                 var camelCased = property.Name.CamelCased();
                 var pascalCased = property.Name.PascalCased();
@@ -479,9 +525,29 @@ namespace EventDayDsl.EventDay
                 method.Statements.Add(condition);
             }
 
+            if (setType == SetPropertiesType.Constructor)
+            {
+                var create = new CodeObjectCreateExpression(type, parameters.ToArray());
+                method.Statements.Add(new CodeMethodReturnStatement(create));
+            }
+            else
+            {
+                var name = $"_{Guid.NewGuid():n}";
+                var instance = new CodeVariableDeclarationStatement(type, name, new CodeObjectCreateExpression(type));
+                var instanceReference = new CodeVariableReferenceExpression(name);
 
-            var create = new CodeObjectCreateExpression(type, parameters.ToArray());
-            method.Statements.Add(new CodeMethodReturnStatement(create));
+                method.Statements.Add(instance);
+
+                foreach (var property in messageProperties.OrderBy(x => x.Optional))
+                {
+                    var propertyReference = new CodePropertyReferenceExpression(instanceReference, property.Name.PascalCased());
+                    method.Statements.Add(new CodeAssignStatement(propertyReference,
+                        new CodeArgumentReferenceExpression($"local{property.Name.PascalCased()}")));
+                }
+
+                method.Statements.Add(new CodeMethodReturnStatement(instanceReference));
+
+            }
             return method;
         }
     }

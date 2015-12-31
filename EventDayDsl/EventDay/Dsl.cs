@@ -158,9 +158,22 @@ namespace EventDayDsl.EventDay
 
         public override string VisitEntityDefinition(GrammarParser.EntityDefinitionContext context)
         {
+            var interfaces = new HashSet<MarkerInterface>(MarkerInterface.NameComparer);
+            var markerList = context.markerList();
+            if (markerList != null)
+            {
+                foreach (var iface in markerList.marker())
+                {
+                    var iname = VisitTerminal(iface.ID());
+                    var definedInterface = File.MarkerInterfaces.First(x => x.Name == iname);
+                    if (definedInterface != null)
+                        interfaces.Add(definedInterface);
+                }
+            }
+
             var name = VisitTerminal(context.type().ID());
 
-            var entity = new Entity(name);
+            var entity = new Entity(name, interfaces);
             foreach (var argument in context.argumentList().argument())
             {
                 if (argument == null)
@@ -168,6 +181,12 @@ namespace EventDayDsl.EventDay
 
                 var tuple = ReadProperty(argument);
                 entity.AddProperty(tuple.Item1, tuple.Item2, tuple.Item3);
+            }
+
+            var stringContext = context.toString();
+            if (stringContext != null)
+            {
+                entity.StringFormat = VisitTerminal(stringContext.TO_STRING());
             }
 
             File.Entities.Add(entity);

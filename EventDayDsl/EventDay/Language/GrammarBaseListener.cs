@@ -8,12 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\code\eventday\vNext\server\tools\dsl\Grammar.g4 by ANTLR 4.5-SNAPSHOT
+// Generated from D:\code\eventday\vNext\dsl\EventDayDsl\EventDay\Grammar.g4 by ANTLR 4.5-SNAPSHOT
 
 // Unreachable code detected
-
-using Antlr4.Runtime.Misc;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -21,9 +18,12 @@ using Antlr4.Runtime.Misc;
 #pragma warning disable 1591
 
 namespace EventDayDsl.EventDay.Language {
-    using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
+
+using Antlr4.Runtime.Misc;
+using IErrorNode = Antlr4.Runtime.Tree.IErrorNode;
 using ITerminalNode = Antlr4.Runtime.Tree.ITerminalNode;
-    using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
+using IToken = Antlr4.Runtime.IToken;
+using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 
 /// <summary>
 /// This class provides an empty implementation of <see cref="IGrammarListener"/>,
@@ -449,4 +449,4 @@ public partial class GrammarBaseListener : IGrammarListener {
 	/// <remarks>The default implementation does nothing.</remarks>
 	public virtual void VisitErrorNode([NotNull] IErrorNode node) { }
 }
-} // namespace EventDay.DSL
+} // namespace EventDayDsl.EventDay.Language

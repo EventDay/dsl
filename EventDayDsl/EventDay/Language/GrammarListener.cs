@@ -8,12 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\code\eventday\vNext\server\tools\dsl\Grammar.g4 by ANTLR 4.5-SNAPSHOT
+// Generated from D:\code\eventday\vNext\dsl\EventDayDsl\EventDay\Grammar.g4 by ANTLR 4.5-SNAPSHOT
 
 // Unreachable code detected
-
-using Antlr4.Runtime.Misc;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -21,9 +18,11 @@ using Antlr4.Runtime.Misc;
 #pragma warning disable 1591
 
 namespace EventDayDsl.EventDay.Language {
-    using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;
+using Antlr4.Runtime.Misc;
+using IParseTreeListener = Antlr4.Runtime.Tree.IParseTreeListener;
+using IToken = Antlr4.Runtime.IToken;
 
-    /// <summary>
+/// <summary>
 /// This interface defines a complete listener for a parse tree produced by
 /// <see cref="GrammarParser"/>.
 /// </summary>
@@ -371,4 +370,4 @@ public interface IGrammarListener : IParseTreeListener {
 	/// <param name="context">The parse tree.</param>
 	void ExitEnumMemberList([NotNull] GrammarParser.EnumMemberListContext context);
 }
-} // namespace EventDay.DSL
+} // namespace EventDayDsl.EventDay.Language

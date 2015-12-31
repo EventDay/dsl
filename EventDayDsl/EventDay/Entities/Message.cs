@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace EventDayDsl.EventDay.Entities
 {
-    public class Message
+    public class Message : IMessage
     {
         public Message(string name, IEnumerable<MarkerInterface> interfaces)
         {

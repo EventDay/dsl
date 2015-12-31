@@ -8,13 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\code\eventday\vNext\server\tools\dsl\Grammar.g4 by ANTLR 4.5-SNAPSHOT
+// Generated from D:\code\eventday\vNext\dsl\EventDayDsl\EventDay\Grammar.g4 by ANTLR 4.5-SNAPSHOT
 
 // Unreachable code detected
-
-using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -22,7 +18,12 @@ using Antlr4.Runtime.Tree;
 #pragma warning disable 1591
 
 namespace EventDayDsl.EventDay.Language {
-    /// <summary>
+using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
+using IToken = Antlr4.Runtime.IToken;
+using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
+
+/// <summary>
 /// This class provides an empty implementation of <see cref="IGrammarVisitor{Result}"/>,
 /// which can be extended to create a visitor which only needs to handle a subset
 /// of the available methods.
@@ -372,4 +373,4 @@ public partial class GrammarBaseVisitor<Result> : AbstractParseTreeVisitor<Resul
 	/// <return>The visitor result.</return>
 	public virtual Result VisitEnumMemberList([NotNull] GrammarParser.EnumMemberListContext context) { return VisitChildren(context); }
 }
-} // namespace EventDay.DSL
+} // namespace EventDayDsl.EventDay.Language

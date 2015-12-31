@@ -8,14 +8,9 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-// Generated from D:\code\eventday\vNext\server\tools\dsl\Grammar.g4 by ANTLR 4.5-SNAPSHOT
+// Generated from D:\code\eventday\vNext\dsl\EventDayDsl\EventDay\Grammar.g4 by ANTLR 4.5-SNAPSHOT
 
 // Unreachable code detected
-
-using Antlr4.Runtime;
-using Antlr4.Runtime.Atn;
-using Antlr4.Runtime.Misc;
-
 #pragma warning disable 0162
 // The variable '...' is assigned but its value is never used
 #pragma warning disable 0219
@@ -23,7 +18,12 @@ using Antlr4.Runtime.Misc;
 #pragma warning disable 1591
 
 namespace EventDayDsl.EventDay.Language {
-    [System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5-SNAPSHOT")]
+using Antlr4.Runtime;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Misc;
+using DFA = Antlr4.Runtime.Dfa.DFA;
+
+[System.CodeDom.Compiler.GeneratedCode("ANTLR", "4.5-SNAPSHOT")]
 [System.CLSCompliant(false)]
 public partial class GrammarLexer : Lexer {
 	public const int
@@ -210,4 +210,4 @@ public partial class GrammarLexer : Lexer {
 	public static readonly ATN _ATN =
 		new ATNDeserializer().Deserialize(_serializedATN.ToCharArray());
 }
-} // namespace EventDay.DSL
+} // namespace EventDayDsl.EventDay.Language

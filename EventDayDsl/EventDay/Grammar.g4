@@ -57,14 +57,16 @@ eventAssignment
 messageDefinition
 	: (CMD | EVENT)? type '(' argumentList ')'
 	    markerList?
-	    toString?
 	    stateApplicationList*
+	    toString?
 	    TERMINATE?
 	;
 
 
 entityDefinition
     : ENTITY type '(' argumentList ')'
+            markerList?
+            toString?
     ;
 
 toString

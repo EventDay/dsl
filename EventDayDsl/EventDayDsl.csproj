@@ -58,6 +58,7 @@
     <Compile Include="EventDay\Entities\Entity.cs" />
     <Compile Include="EventDay\Entities\Enumeration.cs" />
     <Compile Include="EventDay\Entities\File.cs" />
+    <Compile Include="EventDay\Entities\IMessage.cs" />
     <Compile Include="EventDay\Entities\Message.cs" />
     <Compile Include="EventDay\Entities\StateDefinition.cs" />
     <Compile Include="EventDay\Extensions.cs" />

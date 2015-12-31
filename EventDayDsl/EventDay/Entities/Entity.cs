@@ -5,18 +5,21 @@ using System.Collections.Generic;
 
 namespace EventDayDsl.EventDay.Entities
 {
-    public class Entity
+    public class Entity : IMessage
     {
-        public Entity(string name)
+        public Entity(string name, IEnumerable<MarkerInterface> interfaces)
         {
             Name = name;
             Properties = new HashSet<MessageProperty>(MessageProperty.NameComparer);
+            Interfaces = new HashSet<MarkerInterface>(interfaces);
         }
 
         public string Name { get; set; }
         public ISet<MessageProperty> Properties { get; }
+        public ISet<MarkerInterface> Interfaces { get; set; }
 
         public static IEqualityComparer<Entity> NameComparer { get; } = new NameEqualityComparer();
+        public string StringFormat { get; set; }
 
         public void AddProperty(string name, string type, bool optional = false)
         {
