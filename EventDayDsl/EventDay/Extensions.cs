@@ -481,7 +481,7 @@ namespace EventDayDsl.EventDay
 
             var method = new CodeMemberMethod
             {
-                Name = "SetProperties",
+                Name = "WithProperties",
                 ReturnType = type,
                 Attributes = MemberAttributes.Public
             };
