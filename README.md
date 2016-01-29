@@ -4,8 +4,8 @@ A handy DSL for creating [Akka.net](http://getakka.net/) actor protocols and red
 
 Heavily influenced by the Lokad DSL.
 
-For a brief video description and demo of usage, watch the [Akka.NET Virtual Meetup 1/26/2016](https://www.youtube.com/watch?v=G3ZafPNI-hk), 
-specifically the time between 6:05 and 30:30 where Chris Martin provides an explanation and demo.
+For a brief video description and demo of usage by Chris Martin, watch the [Akka.NET Virtual Meetup 1/26/2016](https://www.youtube.com/watch?v=G3ZafPNI-hk), 
+specifically the time between 6:05 and 30:30.
 
 ##Installation
 - A) Compile
